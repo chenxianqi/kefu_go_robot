@@ -1,0 +1,8 @@
+
+# see https://admin.mimc.chat.xiaomi.net/docs/02-createapp.html
+
+# 测试环境
+Host: "https://mimc.chat.xiaomi.net/api/account/token"
+AppId: 2882303761518282099
+AppKey: "5521828290099"
+AppSecret: "516JCA60FdP9bHQUdpXK+Q=="

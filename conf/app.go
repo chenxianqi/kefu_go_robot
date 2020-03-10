@@ -1,23 +1,27 @@
 package conf
 
-// see https://admin.mimc.chat.xiaomi.net/docs/02-createapp.html
+import (
+	"fmt"
+	"io/ioutil"
 
-// AppConfigsObject ...
-type AppConfigsObject struct {
-	httpURL    string // 小米消息云接口地址
-	AppID      int64  // AppID
-	AppKey     string // AppKey
-	AppSecret  string // AppSecret
-	AppAccount string // AppAccount
+	"gopkg.in/yaml.v2"
+)
+
+type conf struct {
+	Host      string `yaml:"Host"`
+	AppID     string `yaml:"AppID"`
+	AppKey    string `yaml:"AppKey"`
+	AppSecret string `yaml:"AppSecret"`
 }
 
-// GetAppConfigs ...
-func GetAppConfigs() AppConfigsObject {
-	return AppConfigsObject{
-		httpURL:    "",
-		AppID:      "",
-		AppKey:     "",
-		AppSecret:  "",
-		AppAccount: "",
+func (c *conf) getConf() *conf {
+	yamlFile, err := ioutil.ReadFile("conf.yaml")
+	if err != nil {
+		fmt.Println(err.Error())
 	}
+	err = yaml.Unmarshal(yamlFile, c)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	return c
 }
