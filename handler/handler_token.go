@@ -1,22 +1,24 @@
-package robotlbrary
+package handler
 
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"kefu_go_robot/conf"
 	"net/http"
+	"strconv"
 	"strings"
-
-	"github.com/astaxie/beego"
 )
 
 // NewTokenHandler ...
 func NewTokenHandler(appAccount string) *TokenHandler {
+	config := new(conf.Cionfigs).GetConfigs()
 	tokenHandler := new(TokenHandler)
-	tokenHandler.httpURL = beego.AppConfig.String("mimc_HttpUrl")
-	tokenHandler.AppID, _ = beego.AppConfig.Int64("mimc_appId")
-	tokenHandler.AppKey = beego.AppConfig.String("mimc_appKey")
-	tokenHandler.AppSecret = beego.AppConfig.String("mimc_appSecret")
+	tokenHandler.httpURL = config.MiHost
+	tokenHandler.AppID, _ = strconv.ParseInt(config.MiAppID, 10, 64)
+	tokenHandler.AppKey = config.MiAppKey
+	tokenHandler.AppSecret = config.MiAppSecret
 	tokenHandler.AppAccount = appAccount
 	return tokenHandler
 }
@@ -25,16 +27,19 @@ func NewTokenHandler(appAccount string) *TokenHandler {
 func (c *TokenHandler) FetchToken() *string {
 	jsonBytes, err := json.Marshal(*c)
 	if err != nil {
+		fmt.Printf("FetchToken error==%v", err)
 		return nil
 	}
 	requestJSONBodygo := bytes.NewBuffer(jsonBytes).String()
 	request, err := http.Post(c.httpURL, "application/json", strings.NewReader(requestJSONBodygo))
 	if err != nil {
+		fmt.Printf("http get FetchToken error==%v", err)
 		return nil
 	}
 	defer request.Body.Close()
 	body, err := ioutil.ReadAll(request.Body)
 	if err != nil {
+		fmt.Printf("ioutil.ReadAll(request.Body) FetchToken error==%v", err)
 		return nil
 	}
 	token := string(body)

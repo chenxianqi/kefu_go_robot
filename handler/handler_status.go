@@ -1,6 +1,6 @@
-package robotlbrary
+package handler
 
-import "github.com/astaxie/beego/logs"
+import "fmt"
 
 // StatusHandler struct
 type StatusHandler struct {
@@ -15,9 +15,9 @@ func NewStatusHandler(appAccount string) *StatusHandler {
 // HandleChange handleChange
 func (c StatusHandler) HandleChange(isOnline bool, errType, errReason, errDescription *string) {
 	if isOnline {
-		logs.Info("机器人霸道上线 status changed: online.", "")
+		fmt.Println("机器人霸道上线 status changed: online.")
 	} else {
 		// 有机器人掉线，重新登录
-		logs.Error("[机器人挂掉了] status changed: offline，errType:%v, errReason:%v, errDes:%v", *errType, *errReason, *errDescription)
+		fmt.Printf("[机器人挂掉了] status changed: offline，errType:%v, errReason:%v, errDes:%v\r\n", *errType, *errReason, *errDescription)
 	}
 }

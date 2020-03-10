@@ -1,4 +1,4 @@
-package robotlbrary
+package handler
 
 import (
 	"kefu_server/models"
@@ -8,6 +8,16 @@ import (
 	"github.com/Xiaomi-mimc/mimc-go-sdk"
 	"github.com/astaxie/beego"
 )
+
+// NewMsgHandler ...
+func NewMsgHandler(appAccount string) *MsgHandler {
+	return &MsgHandler{appAccount}
+}
+
+// MsgHandler ...
+type MsgHandler struct {
+	appAccount string
+}
 
 // Robots 工作中的机器人
 var Robots []*mimc.MCUser

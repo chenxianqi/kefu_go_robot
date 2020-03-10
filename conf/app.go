@@ -7,15 +7,18 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type conf struct {
-	Host      string `yaml:"Host"`
-	AppID     string `yaml:"AppID"`
-	AppKey    string `yaml:"AppKey"`
-	AppSecret string `yaml:"AppSecret"`
+// Cionfigs struct
+type Cionfigs struct {
+	MiHost      string `yaml:"mi_host"`
+	MiAppID     string `yaml:"mi_app_id"`
+	MiAppKey    string `yaml:"mi_app_key"`
+	MiAppSecret string `yaml:"mi_app_secret"`
+	GatewayHost string `yaml:"gateway_host"`
 }
 
-func (c *conf) getConf() *conf {
-	yamlFile, err := ioutil.ReadFile("conf.yaml")
+// GetConfigs instance
+func (c *Cionfigs) GetConfigs() *Cionfigs {
+	yamlFile, err := ioutil.ReadFile("conf/conf.yaml")
 	if err != nil {
 		fmt.Println(err.Error())
 	}

@@ -1,7 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"kefu_go_robot/auth"
+	"kefu_go_robot/conf"
+)
 
 func main() {
-	fmt.Println("Hello, 世界")
+
+	auth.FetchToken()
+	fmt.Println(auth.Token)
+
+	config := new(conf.Cionfigs).GetConfigs()
+	fmt.Println(config.MiAppID)
+	fmt.Println(config.MiAppKey)
+	fmt.Println(config.MiAppSecret)
+	fmt.Println(config.MiHost)
+
 }

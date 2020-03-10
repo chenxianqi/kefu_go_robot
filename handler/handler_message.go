@@ -1,23 +1,15 @@
-package robotlbrary
+package handler
 
 import (
 	"container/list"
 	"encoding/base64"
 	"encoding/json"
-	"kefu_server/models"
+	"kefu_go_robot/models"
+	"strconv"
 
+	"github.com/Xiaomi-mimc/mimc-go-sdk"
 	msg "github.com/Xiaomi-mimc/mimc-go-sdk/message"
 )
-
-// MsgHandler ...
-type MsgHandler struct {
-	appAccount string
-}
-
-// NewMsgHandler ...
-func NewMsgHandler(appAccount string) *MsgHandler {
-	return &MsgHandler{appAccount}
-}
 
 // HandleMessage ...
 func (c MsgHandler) HandleMessage(packets *list.List) {
@@ -30,6 +22,25 @@ func (c MsgHandler) HandleMessage(packets *list.List) {
 		var message models.Message
 		msgContentByte, err := base64.StdEncoding.DecodeString(string(p2pMsg.Payload()))
 		err = json.Unmarshal(msgContentByte, &message)
+
+		// 当前服务机器人
+		var robot *mimc.MCUser
+		var robotID int64
+		msgToAccount := strconv.FormatInt(message.ToAccount, 10)
+		isFromAccountRobot := false
+		for _, robot = range Robots {
+			robotID, _ = strconv.ParseInt(robot.AppAccount(), 10, 64)
+			if robotID == message.FromAccount {
+				isFromAccountRobot = true
+				return
+			}
+			if toAccount := robot.AppAccount(); toAccount == msgToAccount {
+				break
+			}
+		}
+		if isFromAccountRobot {
+			return
+		}
 
 		switch message.BizType {
 		// 消息入库
@@ -49,7 +60,7 @@ func (c MsgHandler) HandleMessage(packets *list.List) {
 		}
 
 		if err == nil {
-			MessageP2P(message)
+			// MessageP2P(message)
 		}
 
 	}
