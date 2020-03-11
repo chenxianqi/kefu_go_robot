@@ -4,10 +4,9 @@ import (
 	"container/list"
 	"encoding/base64"
 	"encoding/json"
-	"kefu_go_robot/models"
-	"strconv"
+	"fmt"
+	"kefu_server/models"
 
-	"github.com/Xiaomi-mimc/mimc-go-sdk"
 	msg "github.com/Xiaomi-mimc/mimc-go-sdk/message"
 )
 
@@ -23,25 +22,15 @@ func (c MsgHandler) HandleMessage(packets *list.List) {
 		msgContentByte, err := base64.StdEncoding.DecodeString(string(p2pMsg.Payload()))
 		err = json.Unmarshal(msgContentByte, &message)
 
+		fmt.Printf("get message %v", message)
+
 		// 当前服务机器人
-		var robot *mimc.MCUser
-		var robotID int64
-		msgToAccount := strconv.FormatInt(message.ToAccount, 10)
-		isFromAccountRobot := false
-		for _, robot = range Robots {
-			robotID, _ = strconv.ParseInt(robot.AppAccount(), 10, 64)
-			if robotID == message.FromAccount {
-				isFromAccountRobot = true
-				return
-			}
-			if toAccount := robot.AppAccount(); toAccount == msgToAccount {
-				break
-			}
-		}
-		if isFromAccountRobot {
+		// var mcUserRobot *mimc.MCUser
+		robot := GetRunRobotInfo(message.ToAccount)
+		if robot.ID == message.FromAccount {
 			return
 		}
-
+		fmt.Printf("当前服务的机器人是 %v", robot)
 		switch message.BizType {
 		// 消息入库
 		case "into":

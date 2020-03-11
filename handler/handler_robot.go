@@ -1,12 +1,12 @@
 package handler
 
 import (
+	"kefu_go_robot/conf"
+	"kefu_go_robot/services"
 	"kefu_server/models"
-	"kefu_server/services"
 	"strconv"
 
 	"github.com/Xiaomi-mimc/mimc-go-sdk"
-	"github.com/astaxie/beego"
 )
 
 // NewMsgHandler ...
@@ -19,12 +19,16 @@ type MsgHandler struct {
 	appAccount string
 }
 
-// Robots 工作中的机器人
-var Robots []*mimc.MCUser
+// MCUserRobots 工作中的机器人
+var MCUserRobots []*mimc.MCUser
+
+// Robots 机器人资料列表
+var Robots []*models.Robot
 
 // CreateRobot 创建机器人
 func CreateRobot(appAccount string) *mimc.MCUser {
-	appID, _ := beego.AppConfig.Int64("mimc_appId")
+	config := new(conf.Cionfigs).GetConfigs()
+	appID, _ := strconv.ParseInt(config.MiAppID, 10, 64)
 	mcUser := mimc.NewUser(uint64(appID), appAccount)
 	mcUser.RegisterStatusDelegate(NewStatusHandler(appAccount))
 	mcUser.RegisterTokenDelegate(NewTokenHandler(appAccount))
@@ -33,35 +37,43 @@ func CreateRobot(appAccount string) *mimc.MCUser {
 	return mcUser
 }
 
-// GetRobots get robot all
-func GetRobots() []models.Robot {
+// GetRunRobotInfo Get current robot
+func GetRunRobotInfo(id int64) *models.Robot {
+	for _, robot := range Robots {
+		if robot.ID == id {
+			return robot
+		}
+	}
+	return nil
+}
 
-	// RobotRepository instance
-	robotRepository := services.GetRobotRepositoryInstance()
-	var robots []models.Robot
-	robots, _ = robotRepository.GetRobots()
+// GetOnlineRobots get robot all
+func GetOnlineRobots() []*models.Robot {
+	RobotRepository := services.GetRobotRepositoryInstance()
+	robots := RobotRepository.GetOnlineAllRobots()
 	return robots
 }
 
-// RobotInit 初始化机器人
-func RobotInit() {
+// RobotRun init
+func RobotRun() {
 
-	// 如果有机器人在工作先退出登录
-	if len(Robots) > 0 {
-		for _, robot := range Robots {
+	// Log out if any robot is working
+	if len(MCUserRobots) > 0 {
+		for _, robot := range MCUserRobots {
 			robot.Logout()
 			robot.Destory()
 		}
-		Robots = []*mimc.MCUser{}
+		MCUserRobots = []*mimc.MCUser{}
 	}
-	robotsData := GetRobots()
+	Robots = GetOnlineRobots()
 	var tempRobots []*mimc.MCUser
-	for _, robot := range robotsData {
+	for _, robot := range Robots {
 		if robot.Switch == 1 {
-			rb := CreateRobot(strconv.FormatInt(robot.ID, 10))
+			rb := CreateRobot("robot_" + strconv.FormatInt(robot.ID, 10))
 			tempRobots = append(tempRobots, rb)
 			rb.Login()
 		}
 	}
-	Robots = tempRobots
+	MCUserRobots = tempRobots
+
 }
