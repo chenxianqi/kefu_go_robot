@@ -4,7 +4,7 @@ import (
 	"container/list"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
+	"kefu_go_robot/services"
 	"kefu_server/models"
 
 	msg "github.com/Xiaomi-mimc/mimc-go-sdk/message"
@@ -22,19 +22,26 @@ func (c MsgHandler) HandleMessage(packets *list.List) {
 		msgContentByte, err := base64.StdEncoding.DecodeString(string(p2pMsg.Payload()))
 		err = json.Unmarshal(msgContentByte, &message)
 
-		fmt.Printf("get message %v", message)
+		// fmt.Printf("get message %v", message)
 
 		// 当前服务机器人
 		// var mcUserRobot *mimc.MCUser
 		robot := GetRunRobotInfo(message.ToAccount)
-		if robot.ID == message.FromAccount {
+		if robot != nil && robot.ID == message.FromAccount {
 			return
 		}
-		fmt.Printf("当前服务的机器人是 %v", robot)
+
+		// message.BizType
 		switch message.BizType {
+
 		// 消息入库
 		case "into":
+			messageJSON, _ := json.Marshal(message.Payload)
+			messageString := base64.StdEncoding.EncodeToString([]byte(messageJSON))
+			MessageRepository := services.GetMessageRepositoryInstance()
+			MessageRepository.PushMessage(messageString)
 			return
+
 		// 撤销消息
 		case "cancel":
 			return

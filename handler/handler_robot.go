@@ -69,7 +69,7 @@ func RobotRun() {
 	var tempRobots []*mimc.MCUser
 	for _, robot := range Robots {
 		if robot.Switch == 1 {
-			rb := CreateRobot("robot_" + strconv.FormatInt(robot.ID, 10))
+			rb := CreateRobot(strconv.FormatInt(robot.ID, 10))
 			tempRobots = append(tempRobots, rb)
 			rb.Login()
 		}
