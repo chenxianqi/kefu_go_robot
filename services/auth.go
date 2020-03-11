@@ -1,6 +1,8 @@
 package services
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"kefu_go_robot/conf"
 	"kefu_server/utils"
@@ -24,10 +26,12 @@ func (r *AuthTokenRepository) FetchToken() {
 	api := "/v1/auth/token/"
 	path := config.GatewayHost + api
 	AuthToken = ""
+	// MD5
+	m5 := md5.New()
+	m5.Write([]byte(config.MiAppID + config.MiAppKey + config.MiAppSecret))
+	secret := hex.EncodeToString(m5.Sum(nil))
 	var request = map[string]string{}
-	request["app_id"] = config.MiAppID
-	request["app_key"] = config.MiAppKey
-	request["app_secret"] = config.MiAppSecret
+	request["app_secret"] = secret
 	response := utils.HTTPRequest(path, "POST", request, "")
 	if response.Code != 200 {
 		fmt.Println(api + "：授权出错！")

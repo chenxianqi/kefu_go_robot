@@ -3199,3 +3199,13 @@
 [info]	2020/03/11 17:56:31 MCUser.go:644: 		[robot_1] [handle packet]get a pong packet.
 [info]	2020/03/11 17:56:34 MCUser.go:450: 		[robot_1] build ping packet.
 [info]	2020/03/11 17:56:34 MCUser.go:644: 		[robot_1] [handle packet]get a pong packet.
+[info]	2020/03/11 17:56:37 MCUser.go:450: 		[robot_1] build ping packet.
+[info]	2020/03/11 17:56:37 MCUser.go:644: 		[robot_1] [handle packet]get a pong packet.
+[info]	2020/03/11 17:56:40 MCUser.go:450: 		[robot_1] build ping packet.
+[info]	2020/03/11 17:56:40 MCUser.go:644: 		[robot_1] [handle packet]get a pong packet.
+[info]	2020/03/11 17:56:43 MCUser.go:450: 		[robot_1] build ping packet.
+[info]	2020/03/11 17:56:43 MCUser.go:644: 		[robot_1] [handle packet]get a pong packet.
+[info]	2020/03/11 17:56:46 MCUser.go:450: 		[robot_1] build ping packet.
+[info]	2020/03/11 17:56:46 MCUser.go:644: 		[robot_1] [handle packet]get a pong packet.
+[info]	2020/03/11 17:56:49 MCUser.go:450: 		[robot_1] build ping packet.
+[info]	2020/03/11 17:56:49 MCUser.go:644: 		[robot_1] [handle packet]get a pong packet.
