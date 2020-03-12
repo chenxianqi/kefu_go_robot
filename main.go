@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"kefu_go_robot/grpcc"
 	"kefu_go_robot/handler"
 	"kefu_go_robot/services"
 	"os"
@@ -24,6 +25,9 @@ func main() {
 
 	// AuthToken
 	fmt.Println("AuthToken==", services.AuthToken)
+
+	// grpcc init
+	grpcc.Run()
 
 	// RobotRun
 	handler.RobotRun()
