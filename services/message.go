@@ -1,9 +1,12 @@
 package services
 
 import (
-	"fmt"
-	"kefu_go_robot/conf"
+	"context"
+	"kefu_go_robot/grpcc"
+	"kefu_server/grpcs"
+	"kefu_server/models"
 	"kefu_server/utils"
+	"log"
 )
 
 // MessageRepository struct
@@ -16,17 +19,19 @@ func GetMessageRepositoryInstance() *MessageRepository {
 }
 
 // PushMessage Push Message
-func (r *MessageRepository) PushMessage(payload string) bool {
-	config := new(conf.Cionfigs).GetConfigs()
-	api := "/v1/public/message/push"
-	path := config.GatewayHost + api
-	var request = map[string]string{}
-	request["msgType"] = "NORMAL_MSG"
-	request["payload"] = payload
-	response := utils.HTTPRequest(path, "POST", request, AuthToken)
-	if response.Code != 200 {
-		fmt.Println(response)
-		return false
+func (r *MessageRepository) PushMessage(payload string) {
+	grpcClient, err := grpcc.GrpcClient()
+	if err != nil {
+		log.Fatalf("PushMessage Push Message use grpcClient err==%v", err)
 	}
-	return true
+	grpcClient.PushMessage(context.Background(), &grpcs.Request{Data: payload})
+}
+
+// CancelMessage Cancel Message
+func (r *MessageRepository) CancelMessage(request models.RemoveMessageRequestDto) {
+	grpcClient, err := grpcc.GrpcClient()
+	if err != nil {
+		log.Fatalf("PushMessage Push Message use grpcClient err==%v", err)
+	}
+	grpcClient.CancelMessage(context.Background(), &grpcs.Request{Data: utils.InterfaceToString(request)})
 }

@@ -1,11 +1,12 @@
 package services
 
 import (
-	"encoding/json"
-	"fmt"
-	"kefu_go_robot/conf"
+	"context"
+	"kefu_go_robot/grpcc"
+	"kefu_server/grpcs"
 	"kefu_server/models"
 	"kefu_server/utils"
+	"log"
 )
 
 // RobotRepository struct
@@ -19,17 +20,12 @@ func GetRobotRepositoryInstance() *RobotRepository {
 
 // GetOnlineAllRobots auth
 func (r *RobotRepository) GetOnlineAllRobots() []*models.Robot {
-	config := new(conf.Cionfigs).GetConfigs()
-	api := "/v1/robot/online/all"
-	path := config.GatewayHost + api
-	response := utils.HTTPRequest(path, "GET", "", AuthToken)
-	if response.Code != 200 {
-		fmt.Println(api + "：授权出错！")
-		return nil
+	grpcClient, err := grpcc.GrpcClient()
+	if err != nil {
+		log.Fatalf("GetOnlineAllRobots auth use grpcClient err==%v", err)
 	}
+	res, _ := grpcClient.GetOnlineAllRobots(context.Background(), &grpcs.Request{Data: ""})
 	var robots []*models.Robot
-	listData := response.Data.([]interface{})
-	mapByte, _ := json.Marshal(listData)
-	_ = json.Unmarshal(mapByte, &robots)
+	utils.StringToInterface(res.Data, &robots)
 	return robots
 }

@@ -4,8 +4,11 @@ import (
 	"container/list"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"kefu_go_robot/services"
 	"kefu_server/models"
+	"kefu_server/utils"
+	"strconv"
 
 	msg "github.com/Xiaomi-mimc/mimc-go-sdk/message"
 )
@@ -22,7 +25,7 @@ func (c MsgHandler) HandleMessage(packets *list.List) {
 		msgContentByte, err := base64.StdEncoding.DecodeString(string(p2pMsg.Payload()))
 		err = json.Unmarshal(msgContentByte, &message)
 
-		// fmt.Printf("get message %v", message)
+		fmt.Printf("get message type %v", message.BizType)
 
 		// 当前服务机器人
 		// var mcUserRobot *mimc.MCUser
@@ -32,18 +35,24 @@ func (c MsgHandler) HandleMessage(packets *list.List) {
 		}
 
 		// message.BizType
+		MessageRepository := services.GetMessageRepositoryInstance()
 		switch message.BizType {
 
 		// 消息入库
 		case "into":
-			messageJSON, _ := json.Marshal(message.Payload)
-			messageString := base64.StdEncoding.EncodeToString([]byte(messageJSON))
-			MessageRepository := services.GetMessageRepositoryInstance()
+			messageString := utils.InterfaceToString(message.Payload)
 			MessageRepository.PushMessage(messageString)
 			return
 
 		// 撤销消息
 		case "cancel":
+			key, _ := strconv.ParseInt(message.Payload, 10, 64)
+			MessageRepository.CancelMessage(
+				models.RemoveMessageRequestDto{
+					FromAccount: message.FromAccount,
+					ToAccount:   message.ToAccount,
+					Key:         key,
+				})
 			return
 		// 搜索知识库
 		case "search_knowledge":
@@ -63,7 +72,7 @@ func (c MsgHandler) HandleMessage(packets *list.List) {
 
 }
 
-// HandleGroupMessage 下面可以自己去实现一些东西（顾名思义MIMC接口）
+// HandleGroupMessage ...
 func (c MsgHandler) HandleGroupMessage(packets *list.List) {
 	//for ele := packets.Front(); ele != nil; ele = ele.Next() {
 	//	p2tmsg := ele.Value.(*msg.P2TMessage)
