@@ -75,5 +75,4 @@ func RobotRun() {
 		}
 	}
 	MCUserRobots = tempRobots
-
 }

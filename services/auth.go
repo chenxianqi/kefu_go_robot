@@ -34,7 +34,7 @@ func (r *AuthTokenRepository) FetchToken() {
 	request["app_secret"] = secret
 	response := utils.HTTPRequest(path, "POST", request, "")
 	if response.Code != 200 {
-		fmt.Println(api + "：授权出错！")
+		fmt.Println(response.Message)
 		return
 	}
 	AuthToken = response.Data.(string)

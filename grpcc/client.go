@@ -16,12 +16,13 @@ var (
 )
 
 // GrpcClient get grpc cline instance
-func GrpcClient() (grpcs.KefuClient, error) {
+func GrpcClient() grpcs.KefuClient {
 	conn, err := initConn()
 	if err != nil {
-		return (grpcs.NewKefuClient)(nil), err
+		fmt.Print("grpcClient grpc CONNECT err:" + err.Error())
+		return (grpcs.NewKefuClient)(nil)
 	}
-	return grpcs.NewKefuClient(conn), nil
+	return grpcs.NewKefuClient(conn)
 }
 
 // initConn get connect
@@ -51,7 +52,7 @@ func newGrpcConn() (*grpc.ClientConn, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Print("grpcClient grpc success")
+	fmt.Printf("grpcClient grpc success")
 	return conn, nil
 }
 
