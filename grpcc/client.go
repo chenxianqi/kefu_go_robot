@@ -2,6 +2,7 @@ package grpcc
 
 import (
 	"fmt"
+	"kefu_go_robot/conf"
 	"kefu_server/grpcs"
 	"sync"
 	"sync/atomic"
@@ -45,8 +46,10 @@ func initConn() (*grpc.ClientConn, error) {
 
 // newGrpcConn
 func newGrpcConn() (*grpc.ClientConn, error) {
+	config := new(conf.Cionfigs).GetConfigs()
+	host := config.GrpcHost + ":" + config.GrpcPort
 	conn, err := grpc.Dial(
-		"127.0.0.1:8028",
+		host,
 		grpc.WithInsecure(),
 	)
 	if err != nil {

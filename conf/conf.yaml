@@ -9,3 +9,7 @@ mi_host: "https://mimc.chat.xiaomi.net/api/account/token"
 mi_app_id: 2882303761518338059
 mi_app_key: "5201833828059"
 mi_app_secret: "wjLFWivIORCFsi3tHr9wHQ=="
+
+# kefu server gorc
+grpc_host: 127.0.0.1
+grpc_port: 8028

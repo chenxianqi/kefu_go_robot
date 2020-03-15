@@ -14,6 +14,8 @@ type Cionfigs struct {
 	MiAppKey    string `yaml:"mi_app_key"`
 	MiAppSecret string `yaml:"mi_app_secret"`
 	GatewayHost string `yaml:"gateway_host"`
+	GrpcHost    string `yaml:"grpc_host"`
+	GrpcPort    string `yaml:"grpc_port"`
 }
 
 // GetConfigs instance
