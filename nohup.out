@@ -6,3 +6,7 @@ payload is emptyget message {0 10000005 1 text 0 1584257006 1584257006164 0 5 2 
 get message {0 10000005 1 search_knowledge 0 1584257006 1584257006458 0 5  0 0} 
 payload is emptyget message {0 10000005 1 text 0 1584257056 1584257056678 0 5 小米消息云有什么优势呢 0 0} 
 get message {0 10000005 1 text 0 1584257059 1584257059175 0 5 收不到消息如何排查 0 0} 
+grpcClient grpc successRobot run success is online robot count ==2 
+机器人:1 霸道上线 status changed: online.机器人:2 霸道上线 status changed: online.grpcClient grpc successRobot run success is online robot count ==2 
+机器人:1 霸道上线 status changed: online. 
+机器人:2 霸道上线 status changed: online. 
