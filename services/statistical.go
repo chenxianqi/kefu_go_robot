@@ -21,7 +21,7 @@ func GetStatisticalRepositoryInstance() *StatisticalRepository {
 // Add Statistical
 func (r *StatisticalRepository) Add(request models.ServicesStatistical) {
 	grpcClient := grpcc.GrpcClient()
-	_, err := grpcClient.PushMessage(context.Background(), &grpcs.Request{Data: utils.InterfaceToString(request)})
+	_, err := grpcClient.InsertStatistical(context.Background(), &grpcs.Request{Data: utils.InterfaceToString(request)})
 	if err != nil {
 		fmt.Printf("Add Statistical err==%v", err)
 	}

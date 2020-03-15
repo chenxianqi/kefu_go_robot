@@ -2,31 +2,29 @@ package main
 
 import (
 	"kefu_go_robot/grpcc"
-	"kefu_go_robot/handler"
+	"kefu_go_robot/robot"
+	"time"
+
+	"github.com/Xiaomi-mimc/mimc-go-sdk/util/log"
 )
 
 func main() {
 
-	// Use semaphores to cooperate with channels to achieve permanent blocking and keep alive processes
-	end := make(chan bool, 1)
-
-	// // FetchToken
-	// AuthTokenRepository := services.GetAuthTokenRepositoryInstance()
-	// AuthTokenRepository.FetchToken()
-	// if services.AuthToken == "" {
-	// 	fmt.Println("/v1/auth/token/：授权出错！")
-	// 	return
-	// }
-	// // AuthToken
-	// fmt.Println("AuthToken==", services.AuthToken)
+	// robot log
+	log.SetLogLevel(log.FatalLevel)
+	// log.SetLogLevel(log.ErrorLevel)
 
 	// grpcc init
 	grpcc.Run()
 
 	// RobotRun
-	handler.RobotRun()
+	robot.Run()
 
-	// The blocking will stop when we pass the SIGUSR2 signal (kill -USR2 [pid])
+	// Restart all robots every 60 minutes
+	c := time.Tick(60 * 60 * time.Second)
+	for {
+		<-c
+		go robot.Run()
+	}
 
-	<-end
 }

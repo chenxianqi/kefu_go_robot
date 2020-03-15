@@ -18,12 +18,12 @@ func GetMessageRepositoryInstance() *MessageRepository {
 	return instance
 }
 
-// PushMessage Push Message
-func (r *MessageRepository) PushMessage(payload string) {
+// InsertMessage Push Message
+func (r *MessageRepository) InsertMessage(payload string) {
 	grpcClient := grpcc.GrpcClient()
-	_, err := grpcClient.PushMessage(context.Background(), &grpcs.Request{Data: payload})
+	_, err := grpcClient.InsertMessage(context.Background(), &grpcs.Request{Data: payload})
 	if err != nil {
-		fmt.Printf("PushMessage Push Message err==%v", err)
+		fmt.Printf("InsertMessage Push Message err==%v", err)
 	}
 }
 
