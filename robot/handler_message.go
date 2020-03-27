@@ -174,8 +174,6 @@ func (c MsgHandler) HandleMessage(packets *list.List) {
 					newMsg.ToAccount = message.FromAccount
 					newMsg.Payload = messageContent
 					newMsgBase64 = utils.InterfaceToString(newMsg)
-
-					// 消息入库
 					mcUserRobot.SendMessage(strconv.FormatInt(message.FromAccount, 10), []byte(newMsgBase64))
 
 					// 帮助客服发送欢迎语
@@ -191,7 +189,7 @@ func (c MsgHandler) HandleMessage(packets *list.List) {
 					services.GetMessageRepositoryInstance().InsertMessage(utils.InterfaceToString(newMsgBase64))
 
 					// 推送列表给客服
-					// services.GetContactRepositoryInstance().PushNewContacts(strconv.FormatInt(admin.ID, 10))
+					services.GetContactRepositoryInstance().PushNewContacts(strconv.FormatInt(admin.ID, 10))
 
 					// 转接入库用于统计服务次数
 					servicesStatistical := models.ServicesStatistical{UserAccount: message.FromAccount, ServiceAccount: admin.ID, Platform: message.Platform, TransferAccount: robot.ID, CreateAt: time.Now().Unix()}

@@ -1,0 +1,19 @@
+
+# see https://admin.mimc.chat.xiaomi.net/docs/02-createapp.html
+
+# 网关APP
+gateway_host: http://localhost:8080
+
+# 小米消息云签名信息
+mi_host: "https://mimc.chat.xiaomi.net/api/account/token"
+# mi_app_id: 2882303761518338059
+# mi_app_key: "5201833828059"
+# mi_app_secret: "wjLFWivIORCFsi3tHr9wHQ=="
+mi_app_id: 2882303761517545722
+mi_app_key: "5551754540722"
+mi_app_secret: "AW7733Rq55l7hDDPOW1oTA=="
+
+
+# kefu server gorc
+grpc_host: im.cmp520.com
+grpc_port: 8083
