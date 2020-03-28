@@ -1,13 +1,13 @@
 package robot
 
 import (
-	"fmt"
 	"kefu_go_robot/conf"
 	"kefu_go_robot/services"
 	"kefu_server/models"
 	"strconv"
 
 	"github.com/Xiaomi-mimc/mimc-go-sdk"
+	"github.com/astaxie/beego/logs"
 )
 
 // NewMsgHandler ...
@@ -77,6 +77,6 @@ func Run() {
 	}
 	MCUserRobots = tempRobots
 
-	fmt.Printf("Robot run success is online robot count ==%v \r\n", len(Robots))
+	logs.Info("Robot run success is online robot count ==%v \r\n", len(Robots))
 
 }

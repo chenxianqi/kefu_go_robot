@@ -2,11 +2,12 @@ package services
 
 import (
 	"context"
-	"fmt"
 	"kefu_go_robot/grpcc"
 	"kefu_server/grpcs"
 	"kefu_server/models"
 	"kefu_server/utils"
+
+	"github.com/astaxie/beego/logs"
 )
 
 // StatisticalRepository struct
@@ -23,6 +24,6 @@ func (r *StatisticalRepository) Add(request models.ServicesStatistical) {
 	grpcClient := grpcc.GrpcClient()
 	_, err := grpcClient.InsertStatistical(context.Background(), &grpcs.Request{Data: utils.InterfaceToString(request)})
 	if err != nil {
-		fmt.Printf("Add Statistical err==%v", err)
+		logs.Info("Add Statistical err==%v", err)
 	}
 }

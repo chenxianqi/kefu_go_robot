@@ -4,7 +4,6 @@ import (
 	"container/list"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"kefu_go_robot/services"
 	"kefu_server/models"
 	"kefu_server/utils"
@@ -14,6 +13,7 @@ import (
 
 	"github.com/Xiaomi-mimc/mimc-go-sdk"
 	msg "github.com/Xiaomi-mimc/mimc-go-sdk/message"
+	"github.com/astaxie/beego/logs"
 )
 
 // create a message
@@ -74,7 +74,7 @@ func (c MsgHandler) HandleMessage(packets *list.List) {
 		var mcUserRobot *mimc.MCUser
 		robot := GetRunRobotInfo(message.ToAccount)
 		if robot == nil {
-			fmt.Printf("robot info == nil \r\n")
+			logs.Info("robot info == nil \r\n")
 			return
 		}
 		if robot != nil && robot.ID == message.FromAccount {
@@ -176,20 +176,28 @@ func (c MsgHandler) HandleMessage(packets *list.List) {
 					newMsgBase64 = utils.InterfaceToString(newMsg)
 					mcUserRobot.SendMessage(strconv.FormatInt(message.FromAccount, 10), []byte(newMsgBase64))
 
-					// 帮助客服发送欢迎语
-					newMsg.BizType = "text"
-					newMsg.Payload = admin.AutoReply
-					newMsg.ToAccount = message.FromAccount
-					newMsg.FromAccount = admin.ID
-					newMsgBase64 = utils.InterfaceToString(newMsg)
-
 					// 发送与消息入库
-					mcUserRobot.SendMessage(strconv.FormatInt(admin.ID, 10), []byte(newMsgBase64))
-					mcUserRobot.SendMessage(strconv.FormatInt(message.FromAccount, 10), []byte(newMsgBase64))
-					services.GetMessageRepositoryInstance().InsertMessage(utils.InterfaceToString(newMsgBase64))
+					go func() {
 
-					// 推送列表给客服
-					services.GetContactRepositoryInstance().PushNewContacts(strconv.FormatInt(admin.ID, 10))
+						// 帮助客服发送欢迎语
+						newMsg.BizType = "text"
+						newMsg.Payload = admin.AutoReply
+						newMsg.ToAccount = message.FromAccount
+						newMsg.FromAccount = admin.ID
+						newMsgBase64 = utils.InterfaceToString(newMsg)
+
+						time.Sleep(time.Second * 1)
+						mcUserRobot.SendMessage(strconv.FormatInt(admin.ID, 10), []byte(newMsgBase64))
+						mcUserRobot.SendMessage(strconv.FormatInt(message.FromAccount, 10), []byte(newMsgBase64))
+						services.GetMessageRepositoryInstance().InsertMessage(utils.InterfaceToString(newMsgBase64))
+
+						// 推送列表给客服
+						services.GetContactRepositoryInstance().PushNewContacts(strconv.FormatInt(admin.ID, 10))
+
+						// 更新用户信息
+						services.GetUserRepositoryInstance().Update(models.User{ID: message.FromAccount, IsService: 1})
+
+					}()
 
 					// 转接入库用于统计服务次数
 					servicesStatistical := models.ServicesStatistical{UserAccount: message.FromAccount, ServiceAccount: admin.ID, Platform: message.Platform, TransferAccount: robot.ID, CreateAt: time.Now().Unix()}

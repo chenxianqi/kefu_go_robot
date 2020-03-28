@@ -3,12 +3,13 @@ package services
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"kefu_go_robot/grpcc"
 	"kefu_server/grpcs"
 	"kefu_server/models"
 	"kefu_server/utils"
 	"strconv"
+
+	"github.com/astaxie/beego/logs"
 )
 
 // KnowledgeBaseRepository struct
@@ -29,7 +30,7 @@ func (r *KnowledgeBaseRepository) GetKnowledgeBaseWithTitleAndPlatform(title str
 	grpcClient := grpcc.GrpcClient()
 	res, err := grpcClient.GetKnowledgeBaseWithTitleAndPlatform(context.Background(), &grpcs.Request{Data: string(byteData)})
 	if err != nil {
-		fmt.Printf("SearchKnowledgeTitles get titles res==%v", err)
+		logs.Info("SearchKnowledgeTitles get titles res==%v", err)
 	}
 	var knowledgeBase *models.KnowledgeBase
 	utils.StringToInterface(res.Data, &knowledgeBase)
@@ -41,7 +42,7 @@ func (r *KnowledgeBaseRepository) SearchKnowledgeTitles(request models.Knowledge
 	grpcClient := grpcc.GrpcClient()
 	res, err := grpcClient.SearchKnowledgeTitles(context.Background(), &grpcs.Request{Data: utils.InterfaceToString(request)})
 	if err != nil {
-		fmt.Printf("SearchKnowledgeTitles get titles res==%v", err)
+		logs.Info("SearchKnowledgeTitles get titles res==%v", err)
 		return nil
 	}
 	var KnowledgeBaseTitles []models.KnowledgeBaseTitleDto
