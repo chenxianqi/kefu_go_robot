@@ -146,6 +146,20 @@ func (c MsgHandler) HandleMessage(packets *list.List) {
 				admins := services.GetAdminRepositoryInstance().GetOnlineAdmins()
 				if len(admins) <= 0 {
 					messageContent = robot.NoServices
+					// 发送一条工单提醒
+					go func() {
+						time.Sleep(time.Second * 1)
+						newMsg := models.Message{}
+						newMsg.Platform = message.Platform
+						newMsg.BizType = "workorder"
+						newMsg.FromAccount = robot.ID
+						newMsg.ToAccount = message.FromAccount
+						newMsg.Timestamp = time.Now().Unix()
+						newMsg.Read = 1
+						newMsg.Payload = "当前暂无客服在线，您可以发送工单留言~"
+						newMsgBase64 := utils.InterfaceToString(newMsg)
+						mcUserRobot.SendMessage(strconv.FormatInt(message.FromAccount, 10), []byte(newMsgBase64))
+					}()
 				} else {
 
 					// 平均分配客服
