@@ -28,6 +28,7 @@
 - cd kefu_go_robot && go get
 
 ## 启动
+请先启动服务端再启动机器人
 go run main.go
 
 
