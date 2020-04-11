@@ -5,14 +5,14 @@ import (
 	"kefu_go_robot/robot"
 	"time"
 
-	"github.com/Xiaomi-mimc/mimc-go-sdk/util/log"
+	"github.com/astaxie/beego/logs"
 )
 
 func main() {
 
 	// robot log
-	log.SetLogLevel(log.FatalLevel)
-	// log.SetLogLevel(log.ErrorLevel)
+	logs.SetLogger(logs.AdapterFile, `{"filename":"project_robot.log","level":6,"maxlines":0,"maxsize":0,"daily":true,"maxdays":10,"color":true}`)
+	logs.EnableFuncCallDepth(true)
 
 	// grpcc init
 	grpcc.Run()
